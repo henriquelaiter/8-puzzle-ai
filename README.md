@@ -1,103 +1,288 @@
-```markdown
 # 🧩 8-Puzzle Solver - Inteligência Artificial
 
-Este projeto implementa um simulador e solucionador para o clássico jogo **8-Puzzle** (Jogo dos Oito), desenvolvido em **Linguagem C**. O objetivo do jogo é mover as peças numeradas de 1 a 8 em um tabuleiro $3 \times 3$ utilizando o espaço vazio (representado pelo número `0`) até atingir o estado meta (ordenado).
+Projeto desenvolvido em Linguagem C para simular e resolver o clássico problema do 8-Puzzle utilizando técnicas de Inteligência Artificial e algoritmos clássicos de busca.
 
-## 🎯 Estado Objetivo (Meta)
+---
+
+# 🎯 Objetivo do Jogo
+
+O objetivo do jogo é reorganizar as peças numeradas de `1` a `8` em um tabuleiro `3x3`, utilizando o espaço vazio (`0`) até alcançar o estado meta:
+
 ```text
-1   2   3
-4   5   6
-7   8   0
-
+1 2 3
+4 5 6
+7 8 0
 ```
 
 ---
 
-## 🧠 Teoria das Técnicas Utilizadas
+# 🧠 Técnicas de IA Implementadas
 
-O projeto aborda a resolução do problema utilizando três abordagens distintas de busca e controle:
-
-### 1. Solução Manual
-
-Permite ao usuário interagir diretamente com o tabuleiro pelo console através do teclado (comandos `W`, `A`, `S`, `D`), testando a lógica de transição de estados e validação de vitória.
-
-### 2. Busca em Largura (BFS - Breadth-First Search) Otimizada
-
-A Busca em Largura explora o espaço de estados nível por nível. Ela garante o encontro da **solução ótima** (com o menor número de movimentos possíveis). Para viabilizar a execução em tempo hábil e evitar estouro de memória, foram aplicadas duas técnicas avançadas de otimização:
-
-* **Mapeamento de Estados:** A matriz bidimensional $3 \times 3$ é "achatada" em um identificador numérico único de 9 dígitos (`long long`). Isso reduz drasticamente o custo computacional de comparar se dois tabuleiros são iguais, substituindo varreduras por laços `for` por uma igualdade direta.
-* **Busca Binária e Inserção Ordenada:** Em vez de realizar uma busca linear lenta ($O(N)$) na lista de estados fechados (*Closed List*), os identificadores numéricos são inseridos de forma ordenada no vetor de visitados, permitindo que a verificação de duplicatas ocorra em tempo logarítmico ($O(\log N)$).
-
-### 3. Busca em Profundidade Limitada Iterativa (IDDFS)
-
-O IDDFS combina a economia de memória da busca em profundidade com a garantia de caminho mínimo da busca em largura. O algoritmo funciona definindo um limite de passos inicial (neste caso, nível 3) e realizando buscas em profundidade até esse ponto. Caso não encontre a solução, o limite é incrementado de 3 em 3 níveis e a busca recomeça do zero.
-
-* **Vantagem:** Consumo de memória extremamente baixo, pois armazena apenas o caminho atual na pilha de recursão.
-* **Desvantagem:** Alto custo de processamento (*trabalho repetitivo*), pois recalcula todos os níveis anteriores a cada aumento de limite. Além disso, por não possuir controle global de visitados, pode gerar loops locais (ir e voltar no mesmo movimento) dentro do limite estipulado.
+O projeto utiliza três abordagens diferentes para resolução do problema:
 
 ---
 
-## 🚀 Desafios Enfrentados no Desenvolvimento
+## 1️⃣ Solução Manual
 
-* **Explosão Combinatória:** O 8-puzzle possui $9! = 362.880$ permutações possíveis. Sem um controle rígido de estados visitados na busca em largura, o programa estourava a memória RAM rapidamente ou ficava preso em loops infinitos.
-* **Custo de Cópia em Memória:** A criação excessiva de ponteiros dinâmicos (`malloc`) para estruturar a árvore de nós pais consome muita paginação de hardware. A conversão de matrizes para chaves numéricas foi o ponto de virada para garantir a estabilidade e velocidade do software.
+Permite ao usuário jogar diretamente pelo terminal utilizando:
+
+| Tecla | Movimento |
+|------|------|
+| W | Cima |
+| A | Esquerda |
+| S | Baixo |
+| D | Direita |
+
+Essa abordagem foi utilizada para validar:
+- movimentação das peças
+- transição de estados
+- condição de vitória
 
 ---
 
-## ⚙️ Configuração do Tabuleiro (Teste vs. Aleatório)
+## 2️⃣ Busca em Largura (BFS)
 
-Para facilitar a análise de desempenho, testes de corretude e depuração das rotas de solução, o código está configurado atualmente na função `main()` com uma **matriz de teste estática** (fácil resolução):
+A Busca em Largura (Breadth-First Search) explora o espaço de estados nível por nível, garantindo encontrar a solução ótima (menor número de movimentos possíveis).
 
-```c
-// Tabuleiro para testes, comentar se ativar tabuleiro aleatório.
-int tabuleiro[3][3] = {{1, 2, 0},
-                       {4, 6, 3},
-                       {7, 5, 8}};
+### 🔹 Otimizações implementadas
 
+### ✅ Mapeamento Numérico dos Estados
+
+O tabuleiro é convertido em um identificador numérico único:
+
+```text
+1 2 3
+4 5 6
+7 8 0
 ```
 
-### 🎲 Como ativar o Tabuleiro Aleatório?
+vira:
 
-Se você deseja testar o comportamento dos algoritmos com desafios gerados aleatoriamente pelo computador, basta inverter os comentários dentro da função `main()`, deixando desta forma:
+```text
+123456780
+```
+
+Isso reduz drasticamente o custo computacional de comparação entre estados.
+
+---
+
+### ✅ Busca Binária em Estados Visitados
+
+Os estados visitados são armazenados ordenadamente, permitindo:
+
+- busca em `O(log N)`
+- inserção eficiente
+- menor consumo de processamento
+
+---
+
+## 3️⃣ Busca em Profundidade Iterativa (IDDFS)
+
+O IDDFS combina:
+- baixo consumo de memória da DFS
+- garantia de solução mínima da BFS
+
+O algoritmo funciona aumentando gradualmente o limite de profundidade:
+
+```text
+3 → 6 → 9 → 12 ...
+```
+
+### ✅ Vantagens
+- baixo consumo de memória
+- implementação recursiva simples
+- boa escalabilidade de memória
+
+### ❌ Desvantagens
+- recalcula níveis anteriores
+- alto custo computacional
+- pode gerar movimentos repetidos
+
+---
+
+# 🚀 Desafios do Projeto
+
+## 🔥 Explosão Combinatória
+
+O problema possui:
+
+```text
+9! = 362.880 estados possíveis
+```
+
+Sem controle de estados visitados:
+- o programa entrava em loops
+- consumia muita memória
+- ficava extremamente lento
+
+---
+
+## ⚙️ Otimização de Memória
+
+Inicialmente o projeto utilizava muitas alocações dinâmicas (`malloc`) para armazenar nós da árvore de estados.
+
+A performance melhorou significativamente após:
+- conversão das matrizes em chaves numéricas
+- redução de cópias em memória
+- implementação de busca binária
+
+---
+
+# 🎲 Configuração do Tabuleiro
+
+---
+
+## 🔹 Modo Teste
+
+Tabuleiro fixo para depuração:
 
 ```c
-geraTabuleiro(tabuleiro);  // Tirar o comentário para funcionar aleatoriamente
+int tabuleiro[3][3] = {
+    {1, 2, 0},
+    {4, 6, 3},
+    {7, 5, 8}
+};
+```
+
+---
+
+## 🔹 Modo Aleatório
+
+Para ativar:
+
+```c
+geraTabuleiro(tabuleiro);
 geraCopia_matriz(tabuleiro, copia);
-
-// int tabuleiro[3][3] = {{1, 2, 0},{4, 6, 3},{7, 5, 8}}; // Comente esta linha
-
 ```
 
-> ⚠️ **Nota sobre Desempenho:** O gerador garante que o tabuleiro criado seja **solucionável** através do cálculo de paridade de inversões (onde o número de inversões precisa ser par). No entanto, dependendo da complexidade do tabuleiro gerado (profundidade da solução superior a 20 movimentos), os algoritmos — especialmente o IDDFS — podem demorar um tempo considerável para processar todos os bilhões de ramos possíveis.
+E comentar:
+
+```c
+// int tabuleiro[3][3] = {{1, 2, 0},{4, 6, 3},{7, 5, 8}};
+```
 
 ---
 
-## 📸 Demonstração do Funcionamento (Exemplos)
+# ⚠️ Observação
 
-Abaixo estão os registros do comportamento do sistema em execução para cada modo de operação:
+O gerador aleatório verifica a paridade de inversões para garantir que o tabuleiro gerado seja solucionável.
 
-### Menu Inicial e Escolha
-
-### Modo de Solução Manual
-
-### Resolução via Busca em Largura (BFS)
-
-### Resolução via Busca Iterativa (IDDFS)
+Mesmo assim:
+- estados muito complexos podem demorar bastante
+- o IDDFS pode consumir muito processamento
+- algumas execuções podem explorar bilhões de possibilidades
 
 ---
 
-## 🛠️ Como Executar o Projeto
+# 📸 Demonstração
 
-1. Certifique-se de ter um compilador C instalado ou utilize uma IDE como o **Code::Blocks**.
-2. Abra o projeto pela IDE ou compile pelo terminal com os comandos:
+## Menu Inicial
+
+```markdown
+![Menu Inicial](images/menu.png)
+```
+
+---
+
+## Solução Manual
+
+```markdown
+![Modo Manual](images/manual.png)
+```
+
+---
+
+## Busca em Largura (BFS)
+
+```markdown
+![Busca em Largura](images/bfs.png)
+```
+
+---
+
+## Busca Iterativa (IDDFS)
+
+```markdown
+![Busca Iterativa](images/iddfs.png)
+```
+
+---
+
+# 🛠️ Como Executar
+
+## Pré-requisitos
+
+- GCC instalado
+- Code::Blocks
+- VS Code
+- Dev-C++
+
+---
+
+## Compilar
+
 ```bash
 gcc src/main.c -o puzzle
+```
+
+---
+
+## Executar
+
+### Linux / MacOS
+
+```bash
 ./puzzle
-
 ```
 
+### Windows
 
-
+```bash
+puzzle.exe
 ```
 
+---
+
+# 📂 Estrutura do Projeto
+
+```text
+8-puzzle-ai/
+│
+├── src/
+│   ├── main.c
+│   ├── bfs.c
+│   ├── iddfs.c
+│   └── ...
+│
+├── images/
+│   ├── menu.png
+│   ├── bfs.png
+│   ├── iddfs.png
+│   └── manual.png
+│
+└── README.md
 ```
+
+---
+
+# 📚 Conceitos Trabalhados
+
+- Inteligência Artificial
+- Estruturas de Dados
+- Algoritmos de Busca
+- BFS
+- DFS
+- IDDFS
+- Grafos
+- Complexidade Computacional
+- Otimização de Memória
+- Recursão
+- Manipulação de Matrizes em C
+
+---
+
+# 👨‍💻 Autor
+
+Desenvolvido por Henrique Laiter.
+
+GitHub: https://github.com/henriquelaiter
