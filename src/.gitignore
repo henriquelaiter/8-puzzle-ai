@@ -1,0 +1,9 @@
+# Ignorar executáveis do Windows
+*.exe
+
+# Ignorar arquivos de objeto compilados
+*.o
+
+# Se o Code::Blocks criar pastas de build, ignore também
+bin/
+obj/

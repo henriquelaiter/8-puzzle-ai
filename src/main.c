@@ -5,9 +5,9 @@
 #include <ctype.h>
 
 #define tam 3       //como o tamanho da matriz eh muito usado, evita repeticao de codigo
-#define MAX_ESTADOS 362880 // 9! (número máximo de permutações possíveis para 8-puzzle)
+#define MAX_ESTADOS 362880 // 9! (numero maximo de permutacoes possiveis para 8-puzzle)
 
-///FUNÇÕES PARA SOLUÇÃO MANUAL.
+///FUNï¿½ï¿½ES PARA SOLUï¿½ï¿½O MANUAL.
 //printa matriz
 void Print_matriz(int Matriz[tam][tam]){
     for(int i=0; i<tam; i++)
@@ -21,7 +21,7 @@ void Print_matriz(int Matriz[tam][tam]){
     return;
 }
 
-//Sempre que chamado gera uma cópia do estado atual da matriz
+//Sempre que chamado gera uma cï¿½pia do estado atual da matriz
 void geraCopia_matriz(int tabuleiro[tam][tam],int copia[tam][tam]){
     for(int i=0; i<tam; i++)
     {
@@ -33,7 +33,7 @@ void geraCopia_matriz(int tabuleiro[tam][tam],int copia[tam][tam]){
     return;
 }
 
-// para ter solução se baseia em paridade --> o num de inversões tem que ser par
+// para ter soluï¿½ï¿½o se baseia em paridade --> o num de inversï¿½es tem que ser par
 int inversoes(int tabuleiro[tam][tam]) {
     int vetor[9];
     int index = 0;
@@ -45,7 +45,7 @@ int inversoes(int tabuleiro[tam][tam]) {
         }
     }
 
-    // Conta inversões
+    // Conta inversï¿½es
     int inversao = 0;
     for (int i = 0; i < 9; i++) {
         for (int j = i + 1; j < 9; j++) {
@@ -58,12 +58,12 @@ int inversoes(int tabuleiro[tam][tam]) {
     return inversao % 2 == 0 ? 0 : 1;
 }
 
-// Gerar tabuleiro aleatório
+// Gerar tabuleiro aleatï¿½rio
 void geraTabuleiro(int tabuleiro[tam][tam]) {
     int nums[9] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 
     do {
-        // Embaralha os números
+        // Embaralha os nï¿½meros
         for (int i = 0; i < 9; i++) {
             int j = rand() % 9;
             int temp = nums[i];
@@ -110,10 +110,6 @@ int Movimento_Jogador(int tabuleiro[tam][tam]){
                 tabuleiro[indexi][indexj] = Aux;
                 Movs = 1;
             }
-            else{
-
-            }
-
         break;
 
         case 'A':
@@ -123,10 +119,6 @@ int Movimento_Jogador(int tabuleiro[tam][tam]){
                 tabuleiro[indexi][indexj] = Aux;
                 Movs = 1;
             }
-            else{
-
-            }
-
         break;
 
         case 'S':
@@ -136,10 +128,6 @@ int Movimento_Jogador(int tabuleiro[tam][tam]){
                 tabuleiro[indexi][indexj] = Aux;
                 Movs = 1;
             }
-            else{
-
-            }
-
         break;
 
         case 'D':
@@ -149,10 +137,6 @@ int Movimento_Jogador(int tabuleiro[tam][tam]){
                 tabuleiro[indexi][indexj] = Aux;
                 Movs = 1;
             }
-            else{
-
-            }
-
         break;
 
         default:
@@ -180,12 +164,11 @@ int Avalia_Matriz(int tabuleiro[tam][tam]){
 }
 
 
-
-///FUNÇÕES DA BUSCA EM LARGURA
+///FUNï¿½ï¿½ES DA BUSCA EM LARGURA
 //Estrutura de estados do 8puzzle
 struct estado {
-    int tabuleiro[3][3];  // Representação do 8-puzzle
-    int vazioX, vazioY;   // Coordenadas do espaço vazio
+    int tabuleiro[3][3];  // Representaï¿½ï¿½o do 8-puzzle
+    int vazioX, vazioY;   // Coordenadas do espaï¿½o vazio
     struct estado* pai;   // Ponteiro para o estado pai
 };
 typedef struct estado Estado;
@@ -196,18 +179,21 @@ struct no{
     struct no* prox;
 };
 typedef struct no No;
+
 //Estrutura de fila
 typedef struct fila{
     No * ini;
     No * fim;
 } Fila;
-//Função para criar a fila
+
+//Funï¿½ï¿½o para criar a fila
 Fila* CriaFila(){
     Fila* f = (Fila*)malloc(sizeof(Fila));
     f->ini = f->fim = NULL;
     return f;
 }
-//Função auxiliar insere no fim
+
+//Funï¿½ï¿½o auxiliar insere no fim
 No* ins_fim(No* fim, Estado E){
     No* p = (No*)malloc(sizeof(No));
     p->info = E;
@@ -217,20 +203,23 @@ No* ins_fim(No* fim, Estado E){
     }
     return p;
 }
-//Função para inserir um elemento na fila
+
+//Funï¿½ï¿½o para inserir um elemento na fila
 void insere (Fila* f, Estado E){
     f->fim = ins_fim(f->fim,E);
     if(f->ini==NULL){
         f->ini = f->fim;
     }
 }
-//Função auxiliar retira do início
+
+//Funï¿½ï¿½o auxiliar retira do inï¿½cio
 No* ret_ini(No* ini){
     No* p = ini->prox;
     free(ini);
     return p;
 }
-//Função para retirar elementos da fila
+
+//Funï¿½ï¿½o para retirar elementos da fila
 Estado retira(Fila* f){
     Estado v;
     if(f->ini==NULL){
@@ -244,7 +233,8 @@ Estado retira(Fila* f){
     }
     return v;
 }
-//Verifica se o estado atual é solução
+
+//Verifica se o estado atual ï¿½ soluï¿½ï¿½o
 int EhSolucao(Estado Atual) {
     int tabuleiroFinal[3][3] = {{1, 2, 3},
                                 {4, 5, 6},
@@ -258,14 +248,16 @@ int EhSolucao(Estado Atual) {
     }
     return 1; // Retorna verdadeiro se todos os elementos forem iguais
 }
-// Movimentos possíveis (cima, baixo, esquerda, direita)
+
+// Movimentos possï¿½veis (cima, baixo, esquerda, direita)
 int movimentos[4][2] = {
     {-1, 0}, // Cima
     {1, 0},  // Baixo
     {0, -1}, // Esquerda
     {0, 1}   // Direita
 };
-// Função para gerar filhos
+
+// Funï¿½ï¿½o para gerar filhos
 int GerarFilhos(Estado atual, Estado filhos[]) {
     int numFilhos = 0;
 
@@ -275,7 +267,7 @@ int GerarFilhos(Estado atual, Estado filhos[]) {
 
         if (novoX >= 0 && novoX < 3 && novoY >= 0 && novoY < 3) {
             Estado novoEstado = atual;
-            novoEstado.pai = (Estado*)malloc(sizeof(Estado)); // Aloca memória para o estado pai
+            novoEstado.pai = (Estado*)malloc(sizeof(Estado)); // Aloca memï¿½ria para o estado pai
             *novoEstado.pai = atual; // Copia o estado atual como pai
 
             novoEstado.tabuleiro[atual.vazioX][atual.vazioY] = novoEstado.tabuleiro[novoX][novoY];
@@ -290,7 +282,8 @@ int GerarFilhos(Estado atual, Estado filhos[]) {
 
     return numFilhos;
 }
-// Função para imprimir o estado atual do tabuleiro
+
+// Funï¿½ï¿½o para imprimir o estado atual do tabuleiro
 void imprimeEstado(Estado estado) {
     for (int i = 0; i < tam; i++) {
         for (int j = 0; j < tam; j++) {
@@ -299,7 +292,8 @@ void imprimeEstado(Estado estado) {
         printf("\n");
     }
 }
-//Função para imprimir o caminho percorrido pelo BFS
+
+//Funï¿½ï¿½o para imprimir o caminho percorrido pelo BFS
 void ImprimeCaminho(Estado* estado) {
     if (estado == NULL) {
         return;
@@ -311,10 +305,43 @@ void ImprimeCaminho(Estado* estado) {
     imprimeEstado(*estado);
     printf("\n");
 }
-// Busca em Largura
+
+// Funï¿½ï¿½o auxiliar: Transforma a matriz 3x3 do estado em um nï¿½mero inteiro ï¿½nico de 9 dï¿½gitos
+long long mapeia_estado(int matriz[tam][tam]) {
+    long long ID = 0;
+    for (int i = 0; i < tam; i++) {
+        for (int j = 0; j < tam; j++) {
+            ID = ID * 10 + matriz[i][j];
+        }
+    }
+    return ID;
+}
+
+// Funï¿½ï¿½o auxiliar de busca binï¿½ria para encontrar o estado rapidamente no vetor ordenado
+int busca_binaria(long long *vetor, int tamanho, long long valor) {
+    int esq = 0, dir = tamanho - 1;
+    while (esq <= dir) {
+        int meio = esq + (dir - esq) / 2;
+        if (vetor[meio] == valor) return meio; // Encontrou o estado (jï¿½ visitado)
+        if (vetor[meio] < valor) esq = meio + 1;
+        else dir = meio - 1;
+    }
+    return -1; // Nï¿½o encontrou (estado inï¿½dito)
+}
+
+// Busca em Largura Otimizada (Com controle de estados visitados via Busca Binï¿½ria)
 int BFS(int tabuleiro[tam][tam]) {
     int ContEstados = 0;
     Fila* FilaDeEstados = CriaFila();
+
+    // Alocaï¿½ï¿½o do vetor para controle de estados visitados (Closed List)
+    long long *visitados = (long long *)malloc(MAX_ESTADOS * sizeof(long long));
+    int total_visitados = 0;
+
+    if (visitados == NULL) {
+        printf("Erro ao alocar memoria para o controle de estados visitados.\n");
+        return 0;
+    }
 
     Estado* EstadoInicial = (Estado*)malloc(sizeof(Estado));
     for (int i = 0; i < tam; i++) {
@@ -326,9 +353,11 @@ int BFS(int tabuleiro[tam][tam]) {
             }
         }
     }
-    EstadoInicial->pai = NULL; // Estado inicial não tem pai
+    EstadoInicial->pai = NULL; // Estado inicial nï¿½o tem pai
 
+    // Insere o estado inicial na fila e o registra no vetor de visitados
     insere(FilaDeEstados, *EstadoInicial);
+    visitados[total_visitados++] = mapeia_estado(EstadoInicial->tabuleiro);
 
     while (FilaDeEstados->ini != NULL) {
         Estado atual = retira(FilaDeEstados);
@@ -339,23 +368,47 @@ int BFS(int tabuleiro[tam][tam]) {
             imprimeEstado(atual);
             printf("\nForam visitados %d estados\n", ContEstados);
 
-            printf("Caminho percorrido para a solução:\n");
+            printf("Caminho percorrido para a solucao:\n");
             ImprimeCaminho(&atual);
-            return 1; // Solução encontrada
+
+            // Libera a memï¿½ria alocada do vetor antes de sair do programa
+            free(visitados);
+            return 1; // Soluï¿½ï¿½o encontrada
         }
 
         Estado filhos[4];
         int numFilhos = GerarFilhos(atual, filhos);
 
         for (int i = 0; i < numFilhos; i++) {
-            insere(FilaDeEstados, filhos[i]);
+            long long id_filho = mapeia_estado(filhos[i].tabuleiro);
+
+            // 1. OTIMIZAï¿½ï¿½O: Substitui o antigo loop for por uma Busca Binï¿½ria (O(log N))
+            int ja_visitado = (busca_binaria(visitados, total_visitados, id_filho) != -1);
+
+            // Se o estado for inï¿½dito, adiciona na fila e marca como visitado
+            if (!ja_visitado) {
+                if (total_visitados < MAX_ESTADOS) {
+
+                    // 2. OTIMIZAï¿½ï¿½O: Insere o elemento deslocando os maiores para o lado.
+                    // Isso mantï¿½m o vetor sempre ordenado para que a busca binï¿½ria funcione na prï¿½xima rodada.
+                    int j = total_visitados - 1;
+                    while (j >= 0 && visitados[j] > id_filho) {
+                        visitados[j + 1] = visitados[j];
+                        j--;
+                    }
+                    visitados[j + 1] = id_filho;
+                    total_visitados++;
+
+                    insere(FilaDeEstados, filhos[i]);
+                }
+            }
         }
     }
 
-    return 0; // Não encontrou a solução
+    // Libera a memï¿½ria caso a fila esvazie sem encontrar soluï¿½ï¿½o
+    free(visitados);
+    return 0; // Nï¿½o encontrou a soluï¿½ï¿½o
 }
-
-
 
 ///Busca em Profundidade Limitada Iterativa
 //Estrutura de pilha
@@ -363,31 +416,36 @@ struct pilha{
     No* Topo;
 };
 typedef struct pilha Pilha;
-//Função que inicializa a pilha
+
+//Funï¿½ï¿½o que inicializa a pilha
 Pilha* CriaPilha(){
     Pilha* p;
     p = (Pilha*)malloc(sizeof(Pilha));
     p -> Topo = NULL;
     return p;
 }
-//Função auxiliar do push
+
+//Funï¿½ï¿½o auxiliar do push
 No* ins_ini(No* t, Estado a){
     No* p = (No*)malloc(sizeof(No));
     p -> info = a;
     p -> prox = t;
     return p;
 }
-//Função Push (Insere um elemento no topo da pilha)
+
+//Funï¿½ï¿½o Push (Insere um elemento no topo da pilha)
 void push(Pilha* p, Estado v){
     p -> Topo = ins_ini(p -> Topo, v);
 }
-//Função auxiliar do pop
+
+//Funï¿½ï¿½o auxiliar do pop
 No* ret_ini_pilha(No* l){
     No* p = l -> prox;
     free(l);
     return p;
 }
-//Função Pop (Retira um elemento do topo da pilha)
+
+//Funï¿½ï¿½o Pop (Retira um elemento do topo da pilha)
 Estado pop (Pilha* p){
     Estado v;
     if (p->Topo == NULL){
@@ -398,7 +456,8 @@ Estado pop (Pilha* p){
     p -> Topo = ret_ini_pilha(p -> Topo);
     return v;
 }
-//Explora os estados até o limite atual
+
+//Explora os estados atï¿½ o limite atual
 int DFS_Limitada(Estado atual, int limite, int* ContEstados) {
     (*ContEstados)++; // Incrementa o contador de estados visitados
 
@@ -407,7 +466,7 @@ int DFS_Limitada(Estado atual, int limite, int* ContEstados) {
         imprimeEstado(atual);
         printf("\nCaminho percorrido para a solucao:\n");
         ImprimeCaminho(&atual);
-        return 1; // Solução encontrada
+        return 1; // Soluï¿½ï¿½o encontrada
     }
 
     if (limite == 0) {
@@ -419,14 +478,13 @@ int DFS_Limitada(Estado atual, int limite, int* ContEstados) {
 
     for (int i = 0; i < numFilhos; i++) {
         if (DFS_Limitada(filhos[i], limite - 1, ContEstados)) {
-            return 1; // Solução encontrada em algum ramo
+            return 1; // Soluï¿½ï¿½o encontrada em algum ramo
         }
     }
-    return 0; // Nenhuma solução encontrada neste caminho
+    return 0; // Nenhuma soluï¿½ï¿½o encontrada neste caminho
 }
 
-//Função que itera os limites
-// Função que itera os limites de profundidade de maneira iterativa
+// Funï¿½ï¿½o que itera os limites de profundidade de maneira iterativa
 int IDDFS(int tabuleiro[tam][tam]) {
     int ContEstados = 0; // Contador de estados visitados
     Estado* inicial = (Estado*)malloc(sizeof(Estado));
@@ -443,24 +501,26 @@ int IDDFS(int tabuleiro[tam][tam]) {
     }
     inicial->pai = NULL;
 
-    // Define o limite inicial e começa a busca
+    // Define o limite inicial e comeï¿½a a busca
     int limite = 3; // Limite inicial da profundidade
     while (1) {
         printf("Buscando com limite de profundidade: %d\n", limite);
         ContEstados = 0; // Resetando o contador de estados visitados
         if (DFS_Limitada(*inicial, limite, &ContEstados)) {
             printf("\nCaminho encontrado com %d estados visitados!\n", ContEstados);
-            return 1; // Solução encontrada
+            free(inicial);
+            return 1; // Soluï¿½ï¿½o encontrada
         }
-        limite += 3; // Aumenta o limite de profundidade a cada iteração
+        limite += 3; // Aumenta o limite de profundidade a cada iteraï¿½ï¿½o
         printf("\nAumentando o limite de profundidade...\n");
     }
 
+    free(inicial);
     return 0;
 }
 
 
-///FUNÇÕES GERAIS
+///FUNï¿½ï¿½ES GERAIS
 void regras(){
     printf("Bem Vindo ao 8-puzzle!\n\n");
     printf("COMANDOS PARA MOVIMENTAR:\n'W' para CIMA.\n'S' para BAIXO.\n'A' para ESQUERDA.\n'D' para DIREITA.\n\n");
@@ -469,18 +529,15 @@ void regras(){
 
 // funcao principal
 int main() {
-    int Mov = 0, ValidMov;       //contador de movimentos e movimentos válidos
-    srand(time(0)); // inicializa o gerador de números aleatórios
-    int tabuleiro[tam][tam];
+    int Mov = 0, ValidMov;       //contador de movimentos e movimentos vï¿½lidos
+    srand(time(0)); // inicializa o gerador de nï¿½meros aleatï¿½rios
+    //int tabuleiro[tam][tam]; // tirar comentï¿½rio para funcionar com tabuleiros aleatï¿½rios.
     int copia[tam][tam];
 
-    /*int tabuleiro[3][3] = {
-        {4, 1, 8},
-        {5, 6, 7},
-        {2, 3, 0}
-    };*/
+    //Tabuleiro para testes, comentar se ativar tabuleiro aleatï¿½rio.
+    int tabuleiro[3][3] = {{1, 2, 0},{4, 6, 3},{7, 5, 8}};
 
-    geraTabuleiro(tabuleiro);
+    //geraTabuleiro(tabuleiro);  // tirar comentï¿½rio para funcionar com tabuleiros aleatï¿½rios.
     geraCopia_matriz(tabuleiro,copia);
 
     int solucao;
@@ -506,6 +563,7 @@ int main() {
             printf("Tabuleiro nao eh valido para resolucao.\n");
         }
         return 0;
+
     case 3: // BUSCA EM PROFUNDIDADE LIMITADA ITERATIVA
         if (inversoes(tabuleiro) == 0){
             IDDFS(tabuleiro);
@@ -513,9 +571,9 @@ int main() {
         else{
             printf("Tabuleiro nao eh valido para resolucao.\n");
         }
-
-    return 0;
+        return 0;
     }
+
     printf("\aPARABENS, VOCE RESOLVEU O TABULEIRO!!!\n\n");
     printf("Voce saiu do estado inicial:\n");
     Print_matriz(copia);
