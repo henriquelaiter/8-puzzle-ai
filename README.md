@@ -1,5 +1,3 @@
-Aqui está o código completo do `README.md` formatado exatamente como você pediu, pronto para você copiar, colar e salvar no seu repositório:
-
 ```markdown
 # 🧩 8-Puzzle Solver - Inteligência Artificial
 
